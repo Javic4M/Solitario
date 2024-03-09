@@ -277,7 +277,7 @@ void mostrarJuego(Lista *lista_1, Lista *lista_2, Lista *lista_3, Lista *lista_4
     }
 }
 
-void verificarInsercionDeCarta2(Lista *listaARecibir, string& numeroSiguiente, string& colorSiguiente, bool& salir) {
+void verificarInsercionDeCarta2(Lista *listaARecibir, string& numeroSiguiente, string& colorSiguiente, string& tipo, bool& salir) {
     string ordenDeLasCartas[13] = {"K", "Q", "J", "I", "9", "8", "7", "6", "5", "4", "3", "2", "A"};
 
     for (int i = 12; i >= 0; i--) {
@@ -291,6 +291,13 @@ void verificarInsercionDeCarta2(Lista *listaARecibir, string& numeroSiguiente, s
                     colorSiguiente = "R";
                 } else {
                     colorSiguiente = "N";
+                }
+            }
+            string contenido = listaARecibir->obtenerNodoFinal()->contenido->cara;
+
+            for (int i = 0; i < contenido.size(); i++) {
+                if (i == 1 || i == 2) {
+                    tipo += contenido[i];
                 }
             }
             break;
@@ -584,12 +591,27 @@ void iniciarPartida() {
 
                 if (!listaAMandar->estaVacia()) {
                     if (!pilaARecibir->estaVacia()) {
-                        string numeroSiguiente = "", colorSiguiente = "";
-                        verificarInsercionDeCarta2(pilaARecibir, numeroSiguiente, colorSiguiente, salir);
+                        string numeroSiguiente = "", colorSiguiente = "", tipo = "", tipo2 = "";
+                        verificarInsercionDeCarta2(pilaARecibir, numeroSiguiente, colorSiguiente, tipo, salir);
 
                         if (listaAMandar->obtenerNodoFinal()->contenido->numero == numeroSiguiente && listaAMandar->obtenerNodoFinal()->contenido->color == colorSiguiente) {
-                            pilaARecibir->ingresarDato(listaAMandar->obtenerNodoFinal()->contenido->cara);
-                            pilaARecibir->obtenerNodoFinal()->contenido->mostrar = true;
+                            string contenido = listaAMandar->obtenerNodoFinal()->contenido->cara;
+
+                            for (int i = 0; i < contenido.size(); i++) {
+                                if (i == 1 || i == 2) {
+                                    tipo2 += contenido[i];
+                                }
+                            }
+
+                            if(tipo == tipo2) {
+                                pilaARecibir->ingresarDato(listaAMandar->obtenerNodoFinal()->contenido->cara);
+                                pilaARecibir->obtenerNodoFinal()->contenido->mostrar = true;
+                            } else {
+                                cout << "\n+++++++++++++++++++++++++++++++++++++++++" << endl;
+                                cout << "La Carta no Cumple con el Patron Solitado" << endl;
+                                cout << "+++++++++++++++++++++++++++++++++++++++++" << endl;
+                                salir = true;
+                            }
                         } else {
                             cout << "\n+++++++++++++++++++++++++++++++++++++++++" << endl;
                             cout << "La Carta no Cumple con el Patron Solitado" << endl;
